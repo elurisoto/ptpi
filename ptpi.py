@@ -1,5 +1,5 @@
 from clases_ptpi import *
-
+from spritesheet import *
 
 def colision_enemigos(enemigos, jugador):
 	for i, enem in enumerate (enemigos):
@@ -26,9 +26,9 @@ while not done:
 
 		if pressed[pygame.K_ESCAPE]: done = True
 		
-		screen.fill((0, 0, 0))
+		screen.fill((0, 67, 171))
 		
-		jugador.controles(pressed)
+		jugador.update(pressed)
 		jugador.dibuja()
 
 		if pygame.time.get_ticks() - t_enemigo > 750:
