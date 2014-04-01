@@ -1,6 +1,6 @@
 import pygame
 import random
-
+#ñklj
 NEGRO = (0, 0, 0)
 BLANCO = (255,255,255)
 AZUL = (0,0,255)
