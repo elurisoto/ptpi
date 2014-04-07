@@ -66,7 +66,7 @@ class Enemigo(pygame.sprite.Sprite):
 		self.ancho = ancho
 		self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
 		pygame.sprite.Sprite.__init__(self)
-		self.image = ss.image_at((5,5,30,30),(0,67,171))
+		self.image = ss.image_at((5,5,31,31),(0,67,171))
 		sprites.add(self)
 
 	def update(self):
