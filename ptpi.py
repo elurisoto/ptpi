@@ -4,38 +4,24 @@ from sstripanim import *
 from copy import copy
 
 def colisiones(enemigos, jugador, disparos):
-	i = 0
-	j = 0
-	# while i < len(enemigos):
+	i = j = 0
 	for enem in enemigos:
 		if pygame.sprite.collide_circle(enem, jugador):
 			enem.kill()
 			enemigos.remove(enem)
-			# i-=1
 
-		# while j < len(disparos):
 		for disp in disparos:
 			if pygame.sprite.collide_circle(disp, enem):
 				enem.kill()
 				disp.kill()
 				enemigos.remove(enem)
 				disparos.remove(disp)
-				# del enemigos[i]
-				# del disparos[j]
-		# 		i-=1
-		# 		j-=1
-		# 	j+=1
-
-
-		# i+=1
 
 
 def dibuja_fondo():
 
 	fondo.image = ss.image_at((268,367,32,32))
-	# fondo.rect = pygame.Rect((0,0,32,32))
 	fondo.layer = 2
-	# sprites.add(copy(fondo))
 
 	for i in range(0,ancho_pantalla,32):
 		for j in range(0,alto_pantalla,32):
@@ -49,6 +35,9 @@ pygame.init()
 
 done = False
 enemigos = []
+islas = []
+
+ultimaisla = 0
 
 clock = pygame.time.Clock()
 t_enemigo = pygame.time.get_ticks()
@@ -70,8 +59,15 @@ while not done:
 		
 		#screen.fill((0, 67, 171))
 		screen.fill((0,0,0,0))
-		jugador.update(pressed)
+		# jugador.update(pressed)
 		sprites.draw(screen)
+		sprites.update(pressed)
+
+
+		if pygame.time.get_ticks() - ultimaisla > random.gauss(10000, 2000):
+			ultimaisla = pygame.time.get_ticks()
+			isla = Isla(random.randint(0,ancho_pantalla + 20), random.randint(0,2))
+			islas.append(isla)
 
 		if pygame.time.get_ticks() - t_enemigo > 750:
 			e_x = random.randint(5, 370)
@@ -80,24 +76,31 @@ while not done:
 			t_enemigo = pygame.time.get_ticks()
 
 
+
 		colisiones(enemigos, jugador, disparos)
 
-		for i, e in enumerate(enemigos):
-			e.update()
 
-			if e.rect.y > 620:
+
+		for i, e in enumerate(enemigos):
+			# e.update()
+
+			if e.rect.y > alto_pantalla + 20:
 				e.kill()
 				del enemigos[i]
 
 
 		for i, d in enumerate(disparos):
-			d.update()
+			# d.update()
 
 			if d.rect.y < -10:
 				d.kill()
 				del disparos[i]
 
-
+		for i,isla in enumerate(islas):
+			# isla.update()
+			if isla.rect.y > alto_pantalla + 20:
+				isla.kill()
+				del islas[i]
 
 		pygame.display.flip()
 		clock.tick(60)

@@ -29,7 +29,7 @@ class Jugador(pygame.sprite.Sprite):
 	alto = 60
 	color = (68,184,172)
 	radius = 30
-	layer = 0
+	_layer = 1
 	ultimodisparo = 0
 	temporizador_disparos = 150
 
@@ -67,7 +67,7 @@ class Enemigo(pygame.sprite.Sprite):
 	velocidad = 1
 	color = ROJO
 	radius = 10
-	layer = 0
+	_layer = 1
 
 
 	def __init__(self, x, y, alto, ancho, velocidad, color):
@@ -82,14 +82,14 @@ class Enemigo(pygame.sprite.Sprite):
 		self.image = ss.image_at((5,5,31,31),(0,67,171))
 		sprites.add(self)
 
-	def update(self):
+	def update(self, pressed):
 		self.rect.y += self.velocidad
 
 
 class Disparo(pygame.sprite.Sprite):
 
 	radius = 5
-	layer = 0
+	_layer = 1
 
 	def __init__(self, x, y, velocidad):
 		self.x = x
@@ -101,13 +101,30 @@ class Disparo(pygame.sprite.Sprite):
 		self.image = ss.image_at((37, 170, 31, 31), (0, 67, 171))
 		sprites.add(self)
 
-	def update(self):
+	def update(self,pressed):
 		self.rect.y -= self.velocidad
 
 
 
+class Isla(pygame.sprite.Sprite):
+	_layer = 0
+	y = -70
+	velocidad = 1
+	def __init__(self,x,indicesprite):
+		self.x = x
+		self.rect = pygame.Rect(self.x, self.y, 62,62)
+		pygame.sprite.Sprite.__init__(self)
 
+		if indicesprite == 0:
+			self.image = ss.image_at((105,500, 62,62), (0,67,171))
+		elif indicesprite == 1:
+			self.image = ss.image_at((168,500,62,62), (0,67,171))
+		elif indicesprite == 2:
+			self.image = ss.image_at((233,500,62,62), (0,67,171))
 
+		sprites.add(self)
+	def update(self, pressed):
+		self.rect.y += self.velocidad
 
 
 
