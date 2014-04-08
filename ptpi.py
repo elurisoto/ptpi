@@ -3,11 +3,32 @@ from ssheet import *
 from sstripanim import *
 from copy import copy
 
-def colision_enemigos(enemigos, jugador):
-	for i, enem in enumerate (enemigos):
-		if pygame.sprite.collide_circle(enemigos[i], jugador):
-			enemigos[i].kill()
-			del enemigos[i]
+def colisiones(enemigos, jugador, disparos):
+	i = 0
+	j = 0
+	# while i < len(enemigos):
+	for enem in enemigos:
+		if pygame.sprite.collide_circle(enem, jugador):
+			enem.kill()
+			enemigos.remove(enem)
+			# i-=1
+
+		# while j < len(disparos):
+		for disp in disparos:
+			if pygame.sprite.collide_circle(disp, enem):
+				enem.kill()
+				disp.kill()
+				enemigos.remove(enem)
+				disparos.remove(disp)
+				# del enemigos[i]
+				# del disparos[j]
+		# 		i-=1
+		# 		j-=1
+		# 	j+=1
+
+
+		# i+=1
+
 
 def dibuja_fondo():
 
@@ -59,7 +80,7 @@ while not done:
 			t_enemigo = pygame.time.get_ticks()
 
 
-		colision_enemigos(enemigos, jugador)
+		colisiones(enemigos, jugador, disparos)
 
 		for i, e in enumerate(enemigos):
 			e.update()

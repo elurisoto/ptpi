@@ -30,6 +30,8 @@ class Jugador(pygame.sprite.Sprite):
 	color = (68,184,172)
 	radius = 30
 	layer = 0
+	ultimodisparo = 0
+	temporizador_disparos = 150
 
 	def __init__(self):
 		self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
@@ -50,7 +52,10 @@ class Jugador(pygame.sprite.Sprite):
 			self.dispara()
 
 	def dispara(self):
-		disparos.append(Disparo(self.rect.x+17, self.rect.y-15, 5))
+		if pygame.time.get_ticks() - self.ultimodisparo >= self.temporizador_disparos:
+
+			disparos.append(Disparo(self.rect.x+17, self.rect.y-15, 5))
+			self.ultimodisparo = pygame.time.get_ticks()
 
 
 class Enemigo(pygame.sprite.Sprite):
