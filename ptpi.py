@@ -61,8 +61,20 @@ while not done:
 
 		colision_enemigos(enemigos, jugador)
 
-		for e in enemigos:
+		for i, e in enumerate(enemigos):
 			e.update()
+
+			if e.rect.y > 620:
+				e.kill()
+				del enemigos[i]
+
+
+		for i, d in enumerate(disparos):
+			d.update()
+
+			if d.rect.y < -10:
+				d.kill()
+				del disparos[i]
 
 
 
