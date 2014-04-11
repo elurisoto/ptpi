@@ -14,7 +14,8 @@ def colisiones(enemigos, jugador, disparos):
 			if pygame.sprite.collide_circle(disp, enem):
 				enem.kill()
 				disp.kill()
-				enemigos.remove(enem)
+				if enem in enemigos:
+					enemigos.remove(enem)
 				disparos.remove(disp)
 
 
