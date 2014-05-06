@@ -2,16 +2,27 @@ from clases_ptpi import *
 from ssheet import *
 from sstripanim import *
 from copy import copy
+import pyganim
+
 
 def colisiones(enemigos, jugador, disparos):
 	i = j = 0
+	global explotar
+	global posicionexplosion
 	for enem in enemigos:
 		if pygame.sprite.collide_circle(enem, jugador):
+			explotar = True
+			posicionexplosion = (enem.rect.x, enem.rect.y)
+			explosion.play()
+
 			enem.kill()
 			enemigos.remove(enem)
 
 		for disp in disparos:
 			if pygame.sprite.collide_circle(disp, enem):
+				explotar = True
+				posicionexplosion = (enem.rect.x, enem.rect.y)
+				explosion.play()
 				enem.kill()
 				disp.kill()
 				if enem in enemigos:
@@ -31,21 +42,33 @@ def dibuja_fondo():
 			sprites.add(copy(fondo)) 		#No me convence
 
 
-
 pygame.init()
+
+explosion = pyganim.PygAnimation([	('animaciones/explosion1.png',0.05),
+									('animaciones/explosion2.png',0.05),
+									('animaciones/explosion3.png',0.05),
+									('animaciones/explosion4.png',0.05),
+									('animaciones/explosion5.png',0.05),
+									('animaciones/explosion6.png',0.05),
+									('animaciones/explosion7.png',0.05),
+								], loop = False)
+
+explosion.set_colorkey((0,67,171), pygame.RLEACCEL)
 
 done = False
 enemigos = []
 islas = []
+explotar = False
 
 ultimaisla = 0
+proximaisla = 700 + pygame.time.get_ticks()
+
 
 clock = pygame.time.Clock()
 t_enemigo = pygame.time.get_ticks()
 fondo = pygame.sprite.Sprite()
 
 dibuja_fondo()
-
 jugador = Jugador()
 
 
@@ -65,8 +88,11 @@ while not done:
 		sprites.update(pressed)
 
 
-		if pygame.time.get_ticks() - ultimaisla > random.gauss(10000, 2000):
+
+
+		if pygame.time.get_ticks() - ultimaisla > proximaisla:
 			ultimaisla = pygame.time.get_ticks()
+			proximaisla = random.uniform(500, 1000) + pygame.time.get_ticks()
 			isla = Isla(random.randint(0,ancho_pantalla + 20), random.randint(0,2))
 			islas.append(isla)
 
@@ -79,8 +105,11 @@ while not done:
 
 
 		colisiones(enemigos, jugador, disparos)
-
-
+		if explotar:
+			explosion.blit(screen, posicionexplosion)
+		if explosion.state == pyganim.STOPPED:
+			explotar = False
+			explosion.stop()
 
 		for i, e in enumerate(enemigos):
 			# e.update()
