@@ -53,7 +53,7 @@ explosion = pyganim.PygAnimation([	('animaciones/explosion1.png',0.05),
 									('animaciones/explosion7.png',0.05),
 								], loop = False)
 
-explosion.set_colorkey((0,67,171), pygame.RLEACCEL)
+explosion.set_colorkey((0,65,175))
 
 done = False
 enemigos = []
