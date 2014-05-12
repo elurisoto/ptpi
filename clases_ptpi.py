@@ -110,6 +110,7 @@ class Isla(pygame.sprite.Sprite):
 	_layer = 0
 	y = -70
 	velocidad = 1
+	_mover = True
 	def __init__(self,x,indicesprite):
 		self.x = x
 		self.rect = pygame.Rect(self.x, self.y, 62,62)
@@ -124,7 +125,9 @@ class Isla(pygame.sprite.Sprite):
 
 		sprites.add(self)
 	def update(self, pressed):
-		self.rect.y += self.velocidad
+		if self._mover:
+			self.rect.y += self.velocidad
+		self._mover = not self._mover
 
 
 

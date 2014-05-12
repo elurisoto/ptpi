@@ -88,8 +88,6 @@ while not done:
 		sprites.update(pressed)
 
 
-
-
 		if pygame.time.get_ticks() - ultimaisla > proximaisla:
 			ultimaisla = pygame.time.get_ticks()
 			proximaisla = random.uniform(500, 1000) + pygame.time.get_ticks()
