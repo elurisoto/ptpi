@@ -1,3 +1,5 @@
+#-*-coding:utf-8-*-
+
 import pygame
 import random
 from ssheet import *
@@ -9,13 +11,15 @@ AZUL = (0,0,255)
 VERDE = (0,255,0)
 ROJO = (255,0,0)
 MORADO = (255,0,255)
-ancho_pantalla = 400
+ancho_pantalla = 600
 alto_pantalla = 600
+
+IZQUIERDA = 0
+DERECHA = 1
+DISPARAR = 2
 
 
 screen = pygame.display.set_mode((ancho_pantalla, alto_pantalla))
-#screen = pygame.Surface((ancho_pantalla, alto_pantalla), pygame.SRCALPHA)
-#screen.set_colorkey((0,67,171))
 screen.set_alpha()
 disparos = []
 
@@ -23,15 +27,15 @@ ss = spritesheet("1945.png")
 sprites = pygame.sprite.LayeredUpdates()
 
 class Jugador(pygame.sprite.Sprite):
-	x = 170
+	x = ancho_pantalla/2
 	y = 500
 	ancho = 60
 	alto = 60
-	color = (68,184,172)
+	velocidad = 3
 	radius = 30
 	_layer = 1
 	ultimodisparo = 0
-	temporizador_disparos = 150
+	temporizador_disparos = 180
 
 	def __init__(self):
 		self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
@@ -41,12 +45,22 @@ class Jugador(pygame.sprite.Sprite):
 
 
 	def update(self, pressed):
+		movx = 0
+
 		if pressed[pygame.K_LEFT]: 
 			if self.rect.x > 0:
-				self.rect.move_ip(-3, 0)
+				movx = -self.velocidad
 		if pressed[pygame.K_RIGHT]: 
 			if self.rect.x < ancho_pantalla - self.ancho:
-				self.rect.move_ip(3, 0)
+				movx = self.velocidad
+		# if pressed[pygame.K_UP]:
+		# 	if self.rect.y > 0:
+		# 		movy = -self.velocidad
+		# if pressed[pygame.K_DOWN]:
+		# 	if self.rect.y < alto_pantalla - self.alto:
+		# 		movy = self.velocidad
+
+		self.rect.move_ip(movx, 0)
 
 		if pressed[pygame.K_SPACE]:
 			self.dispara()
@@ -56,6 +70,22 @@ class Jugador(pygame.sprite.Sprite):
 
 			disparos.append(Disparo(self.rect.x+17, self.rect.y-15, 5))
 			self.ultimodisparo = pygame.time.get_ticks()
+
+	def control(self, orden):
+		movx = 0
+
+		if orden == IZQUIERDA:
+			if self.rect.x > -5:
+				movx = -self.velocidad
+		elif orden == DERECHA:
+			if self.rect.x < ancho_pantalla - self.ancho+5:
+				movx = self.velocidad
+		elif orden == DISPARAR:
+			self.dispara()
+
+		self.rect.move_ip(movx, 0)
+
+
 
 
 class Enemigo(pygame.sprite.Sprite):
@@ -110,7 +140,7 @@ class Isla(pygame.sprite.Sprite):
 	_layer = 0
 	y = -70
 	velocidad = 1
-	_mover = True
+	_mover = 0
 	def __init__(self,x,indicesprite):
 		self.x = x
 		self.rect = pygame.Rect(self.x, self.y, 62,62)
@@ -125,9 +155,9 @@ class Isla(pygame.sprite.Sprite):
 
 		sprites.add(self)
 	def update(self, pressed):
-		if self._mover:
+		if self._mover == 0:
 			self.rect.y += self.velocidad
-		self._mover = not self._mover
+		self._mover = (self._mover + 1)%3
 
 
 
