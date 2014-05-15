@@ -66,6 +66,8 @@ explosion.set_colorkey((0,65,175))
 
 done = False
 enemigos = []
+# lista especial de enemigos en la que en el momento que se dispara a un enemigo este se borra, sin esperar a la colisión
+enemigos_h = []		
 islas = []
 explotar = False
 puntos = 0
@@ -118,47 +120,54 @@ while not done:
 				e_x = random.randint(5, ancho_pantalla-30)
 				e_y = -10
 				enemigos.append(Enemigo(e_x,e_y, 30, 30, 3, ROJO))
+				enemigos_h.append([e_x + enemigos[0].ancho/2,e_y + enemigos[0].alto/2])
 				t_enemigo = pygame.time.get_ticks()
 
+			for i,e in enumerate(enemigos_h):
+				enemigos_h[i][1]+=1
 
+				if e[1] > alto_pantalla:
+					enemigos_h.remove(e)
 
 			colisiones(enemigos, jugador, disparos)
-			l = [[i.rect.x + i.ancho/2, i.rect.y + i.alto/2] for i in enemigos]
 
-			e = Estado(puntos, [jugador.rect.x + jugador.ancho/2 +10, jugador.rect.x + jugador.alto/2], l, jugador.velocidad)
+			# Si quito el +10 todo deja de funcionar, NI ZORRA DE POR QUÉ
+			e = Estado(puntos, [jugador.rect.x + jugador.ancho/2 +10, jugador.rect.y + jugador.alto/2], enemigos_h, jugador.velocidad)
 			l = busqueda_profundidad(e,0)
 			mov = l.index(max(l))
 			jugador.control(mov)
 
-			#print e.evaluar()
+			if mov == DISPARAR:
+				for i in enemigos_h:	#Cálculos para ver si en caso de disparar habría colisión
+					if i[0] - 6 <= jugador.rect.x + jugador.ancho/2  <= i[0]+6:
+						print "hit"
+						enemigos_h.remove(i)
+						break
+
 			if explotar:
 				explosion.blit(screen, posicionexplosion)
+
 			if explosion.state == pyganim.STOPPED:
 				explotar = False
 				explosion.stop()
 
 			for i, e in enumerate(enemigos):
-				# e.update()
-
 				if e.rect.y > alto_pantalla + 20:
 					e.kill()
 					del enemigos[i]
 
 
 			for i, d in enumerate(disparos):
-				# d.update()
-
 				if d.rect.y < -10:
 					d.kill()
 					del disparos[i]
 
 			for i,isla in enumerate(islas):
-				# isla.update()
 				if isla.rect.y > alto_pantalla + 20:
 					isla.kill()
 					del islas[i]
-			clock.tick(60)
 
+			clock.tick(60)
 
 		pygame.display.flip()
 

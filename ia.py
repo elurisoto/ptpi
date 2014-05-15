@@ -17,31 +17,24 @@ class Estado:
 
 	# Genera los tres estados hijos de este
 	def expandir(self, profundidad):
-		self.hijos = []
-		# Nos movemos a la izquierda
-		#self.hijos.append(Estado(self.puntuacion,[self.jugador[0] - self.v, self.jugador[1]], self.lista_enem, self.v))
-		# Nos movemos a la derecha
-		#self.hijos.append(Estado(self.puntuacion,[self.jugador[0] + self.v, self.jugador[1]], self.lista_enem, self.v))
 
 		l = list(self.lista_enem)
 		n_puntuacion = self.puntuacion
-		# Disparamos
-		for i in self.lista_enem:
+
+		for i in self.lista_enem:	#Cálculos para ver si en caso de disparar habría colisión
 			if i[0] - 6 <= self.jugador[0] <= i[0]+6:
 				l.remove(i)
 				n_puntuacion +=1
 				break
 
-		#self.hijos.append(Estado(n_puntuacion, self.jugador, l, self.v))
-
-		self.hijos = 	[Estado(self.puntuacion,[self.jugador[0] - self.v, self.jugador[1]], self.lista_enem, self.v),
-						Estado(self.puntuacion,[self.jugador[0] + self.v, self.jugador[1]], self.lista_enem, self.v),
-						Estado(n_puntuacion, self.jugador, l, self.v)]
+		self.hijos = 	[Estado(self.puntuacion,[self.jugador[0] - self.v, self.jugador[1]], self.lista_enem, self.v),	# Nos movemos a la izquierda
+						Estado(self.puntuacion,[self.jugador[0] + self.v, self.jugador[1]], self.lista_enem, self.v),	# A la derecha
+						Estado(n_puntuacion, self.jugador, l, self.v)]		# Disparamos
 		
 
 	# Función heurística
 	def evaluar(self):
-		s = self.puntuacion*100 - len(self.lista_enem)*100
+		s = self.puntuacion*10 - len(self.lista_enem)*100
 		# Buscaremos minimizar la distancia entre el jugador y el primer enemigo (que va a ser el que más abajo está)
 		# Posiblemente de mejor resultado acercarse al elemento de la lista con una y más parecida. Se deja esto para más adelante
 		if self.lista_enem:
@@ -52,11 +45,14 @@ class Estado:
 			for i in d:			
 				if i < minimo:
 					minimo = i
-			s -= minimo
-
+			s -= minimo*100
+			print "--"
+			print self.lista_enem[0]
+			print self.jugador
 			for i in self.lista_enem:		# Esto debería evitar que choque, pero no va
-				if abs(i[0] - self.jugador[0]) < 10 and abs(i[1] - self.jugador[1]) < 10:
-					s -= 10000
+				if abs(i[0] - self.jugador[0]) < 150 and abs(i[1] - self.jugador[1]) < 150:
+					s = -100000
+					print "CUIDADO"
 
 		return s
 
