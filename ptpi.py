@@ -123,11 +123,10 @@ while not done:
 
 
 			colisiones(enemigos, jugador, disparos)
-			l = [i.rect.x + i.ancho/2 for i in enemigos]
+			l = [[i.rect.x + i.ancho/2, i.rect.y + i.alto/2] for i in enemigos]
 
-			e = Estado(puntos, jugador.rect.x + jugador.ancho/2, l, jugador.velocidad)
-			l = e.hijos()
-			l = [i.evaluar() for i in l]
+			e = Estado(puntos, [jugador.rect.x + jugador.ancho/2 +10, jugador.rect.x + jugador.alto/2], l, jugador.velocidad)
+			l = busqueda_profundidad(e,0)
 			mov = l.index(max(l))
 			jugador.control(mov)
 

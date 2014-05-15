@@ -75,10 +75,10 @@ class Jugador(pygame.sprite.Sprite):
 		movx = 0
 
 		if orden == IZQUIERDA:
-			if self.rect.x > -5:
+			if self.rect.x > -10:
 				movx = -self.velocidad
 		elif orden == DERECHA:
-			if self.rect.x < ancho_pantalla - self.ancho+5:
+			if self.rect.x < ancho_pantalla - self.ancho+10:
 				movx = self.velocidad
 		elif orden == DISPARAR:
 			self.dispara()

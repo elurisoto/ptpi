@@ -13,28 +13,31 @@ class Estado:
 		self.jugador = jugador
 		self.lista_enem = lista_enem
 		self.v = v
+		self.hijos = None
 
 	# Genera los tres estados hijos de este
-	def hijos(self):
-		h = []
-
+	def expandir(self, profundidad):
+		self.hijos = []
 		# Nos movemos a la izquierda
-		h.append(Estado(self.puntuacion,self.jugador - self.v, self.lista_enem, self.v))
+		#self.hijos.append(Estado(self.puntuacion,[self.jugador[0] - self.v, self.jugador[1]], self.lista_enem, self.v))
 		# Nos movemos a la derecha
-		h.append(Estado(self.puntuacion,self.jugador + self.v, self.lista_enem, self.v))
+		#self.hijos.append(Estado(self.puntuacion,[self.jugador[0] + self.v, self.jugador[1]], self.lista_enem, self.v))
 
 		l = list(self.lista_enem)
 		n_puntuacion = self.puntuacion
 		# Disparamos
 		for i in self.lista_enem:
-			if i - 6 <= self.jugador <= i+6:
+			if i[0] - 6 <= self.jugador[0] <= i[0]+6:
 				l.remove(i)
 				n_puntuacion +=1
 				break
 
-		h.append(Estado(n_puntuacion, self.jugador, l, self.v))
+		#self.hijos.append(Estado(n_puntuacion, self.jugador, l, self.v))
 
-		return h
+		self.hijos = 	[Estado(self.puntuacion,[self.jugador[0] - self.v, self.jugador[1]], self.lista_enem, self.v),
+						Estado(self.puntuacion,[self.jugador[0] + self.v, self.jugador[1]], self.lista_enem, self.v),
+						Estado(n_puntuacion, self.jugador, l, self.v)]
+		
 
 	# Función heurística
 	def evaluar(self):
@@ -43,26 +46,40 @@ class Estado:
 		# Posiblemente de mejor resultado acercarse al elemento de la lista con una y más parecida. Se deja esto para más adelante
 		if self.lista_enem:
 
-			d = [abs(i - self.jugador) for i in self.lista_enem]
+			# Busca cual es la distancia al enemigo más cercano
+			d = [abs(i[0] - self.jugador[0]) for i in self.lista_enem]
 			minimo = d[0]
-			for i in d:
+			for i in d:			
 				if i < minimo:
 					minimo = i
 			s -= minimo
 
-			#d = abs(self.lista_enem[i] - self.jugador)
-
+			for i in self.lista_enem:		# Esto debería evitar que choque, pero no va
+				if abs(i[0] - self.jugador[0]) < 10 and abs(i[1] - self.jugador[1]) < 10:
+					s -= 10000
 
 		return s
 
 
+LIMITE_PROFUNDIDAD = 4
 
-
-
-
-
-
-
-
-
+# Aplica una búsqueda en profundidad sobre el arbol de soluciones y devuelve los 
+# mejores resultados que se pueden obtener a raíz de cada una de las acciones.
+def busqueda_profundidad(e, profundidad):
 	
+	if profundidad == LIMITE_PROFUNDIDAD:
+		return e.evaluar()
+	else:
+		e.expandir(profundidad)
+		l = [busqueda_profundidad(i,profundidad+1) for i in e.hijos]
+		return l
+
+
+
+
+
+
+
+
+
+
