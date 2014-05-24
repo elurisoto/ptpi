@@ -1,5 +1,5 @@
 #-*-coding:utf-8-*-
-
+import math
 from clases_ptpi import *
 
 class Estado:
@@ -34,12 +34,21 @@ class Estado:
 
 	# Función heurística
 	def evaluar(self):
-		s = self.puntuacion*10 - len(self.lista_enem)*100
+		s = self.puntuacion*10 + 1000/(len(self.lista_enem)+0.00001)
 		# Buscaremos minimizar la distancia entre el jugador y el primer enemigo (que va a ser el que más abajo está)
 		# Posiblemente de mejor resultado acercarse al elemento de la lista con una y más parecida. Se deja esto para más adelante
 		if self.lista_enem:
 
 			# Busca cual es la distancia al enemigo más cercano
+			d = [abs(i[0][0] - self.jugador[0]) for i in self.lista_enem]
+			minimo = d[0]
+			for i in d:			
+				if i < minimo:
+					minimo = i
+			s += 10000/(minimo + 0.000001)
+
+
+
 			d = [abs(i[1][0] - self.jugador[0]) for i in self.lista_enem if i[2]]
 			print d
 			if d:
@@ -52,12 +61,26 @@ class Estado:
 			# print self.lista_enem[0][1]
 			# print self.jugador
 			for i in self.lista_enem:		# Esto debería evitar que choque, pero no va
-				if abs(i[1][0] - self.jugador[0]) < 150 and abs(i[1][1] - self.jugador[1]) < 150:
-					s = -100000
+				#if (math.abs(i[0] - self.jugador[0]) < 60) and (math.abs(i[1] - self.jugador[1]) < 60):
+				dist = distancia(i[0],self.jugador)
+				#print "[" + str(self.lista_enem.index(i)) + "] " + str(dist)
+				#print len(self.lista_enem)
+				if dist < 100:
+					s -= dist*1000000
+					print "--"
+					print "Enemigo: " + str(i)
+					print "Jugador: " + str(self.jugador)
+					print self.lista_enem.index(i)
+					print dist
 					print "CUIDADO"
 
 		return s
 
+#Calcula la distancia euclídea entre dos puntos
+def distancia(a,b):
+	x = a[0] - b[0]
+	y = a[1] - b[1]
+	return math.sqrt(x*x + y*y)
 
 LIMITE_PROFUNDIDAD = 4
 

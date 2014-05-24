@@ -123,11 +123,7 @@ while not done:
 				#enemigos_h.append()
 				t_enemigo = pygame.time.get_ticks()
 
-			# for i,e in enumerate(enemigos_h):
-			# 	enemigos_h[i][1]+=1
 
-			# 	if e[1] > alto_pantalla:
-			# 		enemigos_h.remove(e)
 
 			colisiones(enemigos, jugador, disparos)
 
@@ -155,7 +151,6 @@ while not done:
 				if e[0].rect.y > alto_pantalla + 20:
 					e[0].kill()
 					del enemigos[i]
-
 
 			for i, d in enumerate(disparos):
 				if d.rect.y < -10:

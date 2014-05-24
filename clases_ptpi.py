@@ -17,6 +17,7 @@ alto_pantalla = 600
 IZQUIERDA = 0
 DERECHA = 1
 DISPARAR = 2
+NADA = 3
 
 
 screen = pygame.display.set_mode((ancho_pantalla, alto_pantalla))
@@ -82,6 +83,7 @@ class Jugador(pygame.sprite.Sprite):
 				movx = self.velocidad
 		elif orden == DISPARAR:
 			self.dispara()
+
 
 		self.rect.move_ip(movx, 0)
 
