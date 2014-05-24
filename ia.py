@@ -4,7 +4,7 @@ from clases_ptpi import *
 
 class Estado:
 
-	# lista_enem es una lista con las posiciones (en principio en el eje x) de los enemigos
+	# lista_enem es una lista como la de enemigos del bucle principal
 	# jugador es la componente x de la posición del jugador
 	# puntuacion es la puntuación actual
 	# v es la velocidad a la que se desplaza el jugador
@@ -35,10 +35,8 @@ class Estado:
 	# Función heurística
 	def evaluar(self):
 		s = self.puntuacion*10 + 1000/(len(self.lista_enem)+0.00001)
-		# Buscaremos minimizar la distancia entre el jugador y el primer enemigo (que va a ser el que más abajo está)
-		# Posiblemente de mejor resultado acercarse al elemento de la lista con una y más parecida. Se deja esto para más adelante
+		# Buscaremos minimizar la distancia entre el jugador y el enemigo más cercano
 		if self.lista_enem:
-
 			# Busca cual es la distancia al enemigo más cercano
 			d = [abs(i[1][0] - self.jugador[0]) for i in self.lista_enem if i[2]]
 			if d:
@@ -47,25 +45,14 @@ class Estado:
 					if i < minimo:
 						minimo = i
 				s -= minimo*100
-			# print "--"
-			# print self.lista_enem[0][1]
-			# print self.jugador
-			for i in self.lista_enem:		# Esto debería evitar que choque, pero no va
-				#if (math.abs(i[0] - self.jugador[0]) < 60) and (math.abs(i[1] - self.jugador[1]) < 60):
+
+			# Si hay un enemigo demasiado cerca, buscamos evitarlo a toda costa
+			for i in self.lista_enem:		
 				if i[2]:
 					dist = distancia(i[1],self.jugador)
-					#print "[" + str(self.lista_enem.index(i)) + "] " + str(dist)
-					#print len(self.lista_enem)
-					#print "Distancia entre " + str(i[1]) + " y " + str(self.jugador) + " = " + str(dist)
 					if dist < 130:
 						s -= dist*1000000
-						print "--"
-						print "Enemigo: " + str(i[1])
-						print "Jugador: " + str(self.jugador)
-						print self.lista_enem.index(i)
-						print dist
-						print "CUIDADO"
-
+						
 		return s
 
 #Calcula la distancia euclídea entre dos puntos
@@ -76,8 +63,7 @@ def distancia(a,b):
 
 LIMITE_PROFUNDIDAD = 4
 
-# Aplica una búsqueda en profundidad sobre el arbol de soluciones y devuelve los 
-# mejores resultados que se pueden obtener a raíz de cada una de las acciones.
+# Genera el arbol de soluciones. La mejor de ella se busca con max()
 def busqueda_profundidad(e, profundidad):
 	
 	if profundidad == LIMITE_PROFUNDIDAD:

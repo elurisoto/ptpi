@@ -56,12 +56,6 @@ class Jugador(pygame.sprite.Sprite):
 		if pressed[pygame.K_RIGHT]: 
 			if self.rect.x < ancho_pantalla - self.ancho:
 				movx = self.velocidad
-		# if pressed[pygame.K_UP]:
-		# 	if self.rect.y > 0:
-		# 		movy = -self.velocidad
-		# if pressed[pygame.K_DOWN]:
-		# 	if self.rect.y < alto_pantalla - self.alto:
-		# 		movy = self.velocidad
 
 		self.rect.move_ip(movx, 0)
 
