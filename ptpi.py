@@ -7,6 +7,15 @@ from sstripanim import *
 from copy import copy
 import pyganim
 
+def matar(enemigo):
+	enemigo.kill()
+	i = enemigos.index(enemigo)
+	for j in range(len(enemigos_h)):
+		if enemigos_h[j][1] == i:
+			del(enemigos_h[j])
+			break
+	if enemigo in enemigos:
+		enemigos.remove(enemigo)
 
 def colisiones(enemigos, jugador, disparos):
 	i = j = 0
@@ -19,8 +28,7 @@ def colisiones(enemigos, jugador, disparos):
 			explotar = True
 			posicionexplosion = (enem.rect.x, enem.rect.y)
 			explosion.play()
-			enem.kill()
-			enemigos.remove(enem)
+			matar(enem)
 			
 
 		for disp in disparos:
@@ -28,10 +36,11 @@ def colisiones(enemigos, jugador, disparos):
 				explotar = True
 				posicionexplosion = (enem.rect.x, enem.rect.y)
 				explosion.play()
-				enem.kill()
+				#enem.kill()
 				disp.kill()
-				if enem in enemigos:
-					enemigos.remove(enem)
+				#if enem in enemigos:
+				#	enemigos.remove(enem)
+				matar(enem)
 				disparos.remove(disp)
 				puntos += 1
 				marcador = myfont.render("SCORE: " + str(puntos), 0, (255,255,0))
@@ -120,14 +129,10 @@ while not done:
 				e_x = random.randint(5, ancho_pantalla-30)
 				e_y = -10
 				enemigos.append(Enemigo(e_x,e_y, 30, 30, 3, ROJO))
-				enemigos_h.append([e_x + enemigos[0].ancho/2,e_y + enemigos[0].alto/2])
+				enemigos_h.append([[e_x + enemigos[0].ancho/2,e_y + enemigos[0].alto/2], len(enemigos)-1])
 				t_enemigo = pygame.time.get_ticks()
 
-			for i,e in enumerate(enemigos_h):
-				enemigos_h[i][1]+=1
 
-				if e[1] > alto_pantalla:
-					enemigos_h.remove(e)
 
 			colisiones(enemigos, jugador, disparos)
 
@@ -135,14 +140,29 @@ while not done:
 			e = Estado(puntos, [jugador.rect.x + jugador.ancho/2 +10, jugador.rect.y + jugador.alto/2], enemigos_h, jugador.velocidad)
 			l = busqueda_profundidad(e,0)
 			mov = l.index(max(l))
+			if max(l[0]) == max(l[1]) == max(l[2]):
+				mov = NADA
+
+			#print max(l)
+
+			# if mov == DISPARAR:
+			# 	for i in enemigos_h:	#Cálculos para ver si en caso de disparar habría colisión
+			# 		if i[0] - 6 <= jugador.rect.x + jugador.ancho/2  <= i[0]+6:
+			# 			#print "hit"
+			# 			enemigos_h.remove(i)
+			# 			break
+			# 	else:
+			# 		mov = NADA
+			# 		print "NADA"
+
 			jugador.control(mov)
 
-			if mov == DISPARAR:
-				for i in enemigos_h:	#Cálculos para ver si en caso de disparar habría colisión
-					if i[0] - 6 <= jugador.rect.x + jugador.ancho/2  <= i[0]+6:
-						print "hit"
-						enemigos_h.remove(i)
-						break
+
+			# for i,e in enumerate(enemigos_h):
+			# 	enemigos_h[i][1]+=1
+
+			# 	if e[1] > alto_pantalla:
+			# 		enemigos_h.remove(e)
 
 			if explotar:
 				explosion.blit(screen, posicionexplosion)
@@ -152,10 +172,8 @@ while not done:
 				explosion.stop()
 
 			for i, e in enumerate(enemigos):
-				if e.rect.y > alto_pantalla + 20:
-					e.kill()
-					del enemigos[i]
-
+				if e.rect.y > alto_pantalla + 10:
+					matar(e)
 
 			for i, d in enumerate(disparos):
 				if d.rect.y < -10:
