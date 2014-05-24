@@ -22,7 +22,7 @@ class Estado:
 		n_puntuacion = self.puntuacion
 
 		for i in self.lista_enem:	#Cálculos para ver si en caso de disparar habría colisión
-			if i[0] - 6 <= self.jugador[0] <= i[0]+6:
+			if i[1][0] - 6 <= self.jugador[0] <= i[1][0]+6:
 				l.remove(i)
 				n_puntuacion +=1
 				break
@@ -40,17 +40,19 @@ class Estado:
 		if self.lista_enem:
 
 			# Busca cual es la distancia al enemigo más cercano
-			d = [abs(i[0] - self.jugador[0]) for i in self.lista_enem]
-			minimo = d[0]
-			for i in d:			
-				if i < minimo:
-					minimo = i
-			s -= minimo*100
-			print "--"
-			print self.lista_enem[0]
-			print self.jugador
+			d = [abs(i[1][0] - self.jugador[0]) for i in self.lista_enem if i[2]]
+			print d
+			if d:
+				minimo = d[0]
+				for i in d:			
+					if i < minimo:
+						minimo = i
+				s -= minimo*100
+			# print "--"
+			# print self.lista_enem[0][1]
+			# print self.jugador
 			for i in self.lista_enem:		# Esto debería evitar que choque, pero no va
-				if abs(i[0] - self.jugador[0]) < 150 and abs(i[1] - self.jugador[1]) < 150:
+				if abs(i[1][0] - self.jugador[0]) < 150 and abs(i[1][1] - self.jugador[1]) < 150:
 					s = -100000
 					print "CUIDADO"
 

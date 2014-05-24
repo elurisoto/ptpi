@@ -15,20 +15,20 @@ def colisiones(enemigos, jugador, disparos):
 	global marcador
 	global puntos
 	for enem in enemigos:
-		if pygame.sprite.collide_circle(enem, jugador):
+		if pygame.sprite.collide_circle(enem[0], jugador):
 			explotar = True
-			posicionexplosion = (enem.rect.x, enem.rect.y)
+			posicionexplosion = (enem[0].rect.x, enem[0].rect.y)
 			explosion.play()
-			enem.kill()
+			enem[0].kill()
 			enemigos.remove(enem)
 			
 
 		for disp in disparos:
-			if pygame.sprite.collide_circle(disp, enem):
+			if pygame.sprite.collide_circle(disp, enem[0]):
 				explotar = True
-				posicionexplosion = (enem.rect.x, enem.rect.y)
+				posicionexplosion = (enem[0].rect.x, enem[0].rect.y)
 				explosion.play()
-				enem.kill()
+				enem[0].kill()
 				disp.kill()
 				if enem in enemigos:
 					enemigos.remove(enem)
@@ -67,7 +67,7 @@ explosion.set_colorkey((0,65,175))
 done = False
 enemigos = []
 # lista especial de enemigos en la que en el momento que se dispara a un enemigo este se borra, sin esperar a la colisión
-enemigos_h = []		
+#enemigos_h = []		
 islas = []
 explotar = False
 puntos = 0
@@ -119,29 +119,29 @@ while not done:
 			if pygame.time.get_ticks() - t_enemigo > 750:
 				e_x = random.randint(5, ancho_pantalla-30)
 				e_y = -10
-				enemigos.append(Enemigo(e_x,e_y, 30, 30, 3, ROJO))
-				enemigos_h.append([e_x + enemigos[0].ancho/2,e_y + enemigos[0].alto/2])
+				enemigos.append([Enemigo(e_x,e_y, 30, 30, 3, ROJO),[e_x + 15,e_y + 15], True])
+				#enemigos_h.append()
 				t_enemigo = pygame.time.get_ticks()
 
-			for i,e in enumerate(enemigos_h):
-				enemigos_h[i][1]+=1
+			# for i,e in enumerate(enemigos_h):
+			# 	enemigos_h[i][1]+=1
 
-				if e[1] > alto_pantalla:
-					enemigos_h.remove(e)
+			# 	if e[1] > alto_pantalla:
+			# 		enemigos_h.remove(e)
 
 			colisiones(enemigos, jugador, disparos)
 
 			# Si quito el +10 todo deja de funcionar, NI ZORRA DE POR QUÉ
-			e = Estado(puntos, [jugador.rect.x + jugador.ancho/2 +10, jugador.rect.y + jugador.alto/2], enemigos_h, jugador.velocidad)
+			e = Estado(puntos, [jugador.rect.x + jugador.ancho/2 +10, jugador.rect.y + jugador.alto/2], enemigos, jugador.velocidad)
 			l = busqueda_profundidad(e,0)
 			mov = l.index(max(l))
 			jugador.control(mov)
 
 			if mov == DISPARAR:
-				for i in enemigos_h:	#Cálculos para ver si en caso de disparar habría colisión
-					if i[0] - 6 <= jugador.rect.x + jugador.ancho/2  <= i[0]+6:
+				for i in enemigos:	#Cálculos para ver si en caso de disparar habría colisión
+					if i[1][0] - 6 <= jugador.rect.x + jugador.ancho/2  <= i[1][0]+6:
 						print "hit"
-						enemigos_h.remove(i)
+						i[2] = False
 						break
 
 			if explotar:
@@ -152,8 +152,8 @@ while not done:
 				explosion.stop()
 
 			for i, e in enumerate(enemigos):
-				if e.rect.y > alto_pantalla + 20:
-					e.kill()
+				if e[0].rect.y > alto_pantalla + 20:
+					e[0].kill()
 					del enemigos[i]
 
 
