@@ -13,6 +13,8 @@ ROJO = (255,0,0)
 MORADO = (255,0,255)
 ancho_pantalla = 600
 alto_pantalla = 600
+ancho_enemigo = 30
+alto_enemigo = 30
 
 IZQUIERDA = 0
 DERECHA = 1
@@ -76,10 +78,10 @@ class Jugador(pygame.sprite.Sprite):
 		movx = 0
 
 		if orden == IZQUIERDA:
-			if self.rect.x > -10:
+			if self.rect.x > -self.ancho/2:
 				movx = -self.velocidad
 		elif orden == DERECHA:
-			if self.rect.x < ancho_pantalla - self.ancho+10:
+			if self.rect.x < ancho_pantalla + self.ancho+10:
 				movx = self.velocidad
 		elif orden == DISPARAR:
 			self.dispara()

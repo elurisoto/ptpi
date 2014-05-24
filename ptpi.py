@@ -110,16 +110,19 @@ while not done:
 			sprites.update(pressed)
 			screen.blit(marcador, (10, 10))
 
+			for e in enemigos:
+				e[1][1]+= e[0].velocidad
+
 			if pygame.time.get_ticks() - ultimaisla > proximaisla:
 				ultimaisla = pygame.time.get_ticks()
 				proximaisla = random.uniform(500, 1000) + pygame.time.get_ticks()
 				isla = Isla(random.randint(0,ancho_pantalla + 20), random.randint(0,2))
 				islas.append(isla)
 
-			if pygame.time.get_ticks() - t_enemigo > 750:
+			if pygame.time.get_ticks() - t_enemigo > 500:
 				e_x = random.randint(5, ancho_pantalla-30)
 				e_y = -10
-				enemigos.append([Enemigo(e_x,e_y, 30, 30, 3, ROJO),[e_x + 15,e_y + 15], True])
+				enemigos.append([Enemigo(e_x,e_y, 30, 30, 3, ROJO),[e_x + ancho_enemigo/2,e_y + alto_enemigo/2], True])
 				#enemigos_h.append()
 				t_enemigo = pygame.time.get_ticks()
 
@@ -127,18 +130,17 @@ while not done:
 
 			colisiones(enemigos, jugador, disparos)
 
-			# Si quito el +10 todo deja de funcionar, NI ZORRA DE POR QUÉ
-			e = Estado(puntos, [jugador.rect.x + jugador.ancho/2 +10, jugador.rect.y + jugador.alto/2], enemigos, jugador.velocidad)
+			e = Estado(puntos, [jugador.rect.x + jugador.ancho/2, jugador.rect.y + jugador.alto/2], enemigos, jugador.velocidad)
 			l = busqueda_profundidad(e,0)
 			mov = l.index(max(l))
 			jugador.control(mov)
 
 			if mov == DISPARAR:
 				for i in enemigos:	#Cálculos para ver si en caso de disparar habría colisión
-					if i[1][0] - 6 <= jugador.rect.x + jugador.ancho/2  <= i[1][0]+6:
-						print "hit"
-						i[2] = False
-						break
+					if i[2]:
+						if i[1][0] - ancho_enemigo/2 <= jugador.rect.x + jugador.ancho/2  <= i[1][0]+ancho_enemigo/2:
+							i[2] = False
+							break
 
 			if explotar:
 				explosion.blit(screen, posicionexplosion)
