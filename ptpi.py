@@ -89,6 +89,7 @@ fondo = pygame.sprite.Sprite()
 dibuja_fondo()
 jugador = Jugador()
 pause = False
+mov = NADA
 
 while not done:
 		for event in pygame.event.get():
@@ -130,12 +131,13 @@ while not done:
 			colisiones(enemigos, jugador, disparos)
 
 			# Crea el estado actual y lanza la búsqueda en profundidad
-			e = Estado(puntos, [jugador.rect.x + jugador.ancho/2, jugador.rect.y + jugador.alto/2], enemigos, jugador.velocidad)
+			e = Estado(puntos, [jugador.rect.x + jugador.ancho/2, jugador.rect.y + jugador.alto/2], enemigos, jugador.velocidad, mov)
 			l = busqueda_profundidad(e,0)
 
 			# max() nos devuelve la lista que contiene el mayor elemento de toda la estructura
 			mov = l.index(max(l))
 			jugador.control(mov)
+			print mov
 
 			# Si tenemos que disparar y hay un enemigo en la trayectoria del disparo, lo marcamos como disparado
 			# para ignorarlo posteriormente
@@ -158,6 +160,8 @@ while not done:
 				if e[0].rect.y > alto_pantalla + 20:
 					e[0].kill()
 					del enemigos[i]
+				if e[1][0] > 570:
+					e[2] = False
 
 			for i, d in enumerate(disparos):
 				if d.rect.y < -10:

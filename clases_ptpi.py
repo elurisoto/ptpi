@@ -38,7 +38,7 @@ class Jugador(pygame.sprite.Sprite):
 	radius = 30
 	_layer = 1
 	ultimodisparo = 0
-	temporizador_disparos = 180
+	temporizador_disparos = 80
 
 	def __init__(self):
 		self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
