@@ -39,7 +39,6 @@ class Estado:
 		
 
 	# Función heurística
-	@profile
 	def evaluar(self):
 		s = self.puntuacion*100000 + 100000/(len(self.lista_enem)+0.00001)
 		# if not(self.colision) and self.accion == DISPARAR:
@@ -50,7 +49,7 @@ class Estado:
 		if self.lista_enem:
 			# Busca cual es la distancia al enemigo más cercano
 			#d = [10.0/(abs(i[1][0] - self.jugador[0])+0.000001) for i in self.lista_enem if i[2]]
-			d = [(abs(i[1][0] - self.jugador[0])+0.000001) for i in self.lista_enem if i[2]]
+			d = [abs(i[1][0] - self.jugador[0]) for i in self.lista_enem if i[2]]
 
 			if d:
 				# minimo = d[0]
