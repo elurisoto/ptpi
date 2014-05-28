@@ -146,7 +146,7 @@ while not done:
 				# max() nos devuelve la lista que contiene el mayor elemento de toda la estructura
 				mov = l.index(max(l))
 				jugador.control(mov)
-
+ 
 				# Si tenemos que disparar y hay un enemigo en la trayectoria del disparo, lo marcamos como disparado
 				# para ignorarlo posteriormente
 				if mov == DISPARAR:
