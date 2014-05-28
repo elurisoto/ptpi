@@ -34,8 +34,7 @@ def colisiones(enemigos, jugador, disparos):
 				if enem in enemigos:
 					enemigos.remove(enem)
 				disparos.remove(disp)
-				puntos += 1
-				marcador = myfont.render("SCORE: " + str(puntos), 0, (255,255,0))
+				puntos += 10
 					
 
 
@@ -96,6 +95,8 @@ while not done:
 				if event.type == pygame.QUIT:
 						done = True
 		
+		marcador = myfont.render("SCORE: " + str(puntos), 0, (255,255,0))
+		
 		pressed = pygame.key.get_pressed()
 
 		if pressed[pygame.K_ESCAPE]: done = True
@@ -137,16 +138,18 @@ while not done:
 			# max() nos devuelve la lista que contiene el mayor elemento de toda la estructura
 			mov = l.index(max(l))
 			jugador.control(mov)
-			print mov
+			#print mov
 
 			# Si tenemos que disparar y hay un enemigo en la trayectoria del disparo, lo marcamos como disparado
 			# para ignorarlo posteriormente
 			if mov == DISPARAR:
+				puntos -= 1
 				for i in enemigos:	#Cálculos para ver si en caso de disparar habría colisión
 					if i[2]:
-						if i[1][0] - ancho_enemigo/2 <= jugador.rect.x + jugador.ancho/2  <= i[1][0]+ancho_enemigo/2:
-							i[2] = False
-							break
+						if i[1][0] - ancho_enemigo/2 -3 <= jugador.rect.x + jugador.ancho/2  <= i[1][0]+ancho_enemigo/2+3:
+							if i[1][1] <= 500:
+								i[2] = False
+								break
 
 			if explotar:
 				explosion.blit(screen, posicionexplosion)
@@ -160,8 +163,8 @@ while not done:
 				if e[0].rect.y > alto_pantalla + 20:
 					e[0].kill()
 					del enemigos[i]
-				if e[1][0] > 570:
-					e[2] = False
+				# if e[1][0] > 570:
+				# 	e[2] = False
 
 			for i, d in enumerate(disparos):
 				if d.rect.y < -10:

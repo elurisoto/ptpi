@@ -25,53 +25,57 @@ class Estado:
 
 		for i in self.lista_enem:	#Cálculos para ver si en caso de disparar habría colisión
 			if i[2]:
-				if i[1][0] - 7<= self.jugador[0] <= i[1][0]+7:
+				if i[1][0] - ancho_enemigo/2 +3 <= self.jugador[0] <= i[1][0]+ancho_enemigo/2-3:
 					l.remove(i)
-					n_puntuacion +=1
+					n_puntuacion +=10
 					self.colision = True
 					break
 
 
 		self.hijos = 	[Estado(self.puntuacion,[self.jugador[0] - self.v, self.jugador[1]], self.lista_enem, self.v, IZQUIERDA),	# Nos movemos a la izquierda
 						Estado(self.puntuacion,[self.jugador[0] + self.v, self.jugador[1]], self.lista_enem, self.v, DERECHA),	# A la derecha
-						Estado(n_puntuacion, self.jugador, l, self.v, DISPARAR),		# Disparamos
+						Estado(n_puntuacion-1, self.jugador, l, self.v, DISPARAR),		# Disparamos
 						Estado(self.puntuacion, self.jugador, self.lista_enem, self.v, NADA)]		# No hacemos nada
 		
 
 	# Función heurística
+	@profile
 	def evaluar(self):
-		s = self.puntuacion*10 + 1000/(len(self.lista_enem)+0.00001)
-		if not(self.colision) and self.accion == DISPARAR:
-			s=-100000
+		s = self.puntuacion*100000 + 100000/(len(self.lista_enem)+0.00001)
+		# if not(self.colision) and self.accion == DISPARAR:
+		# 	s=-100000
+		#print "[" + str(self.accion) + "]" + str(s)
 
 		# Buscaremos minimizar la distancia entre el jugador y el enemigo más cercano
 		if self.lista_enem:
 			# Busca cual es la distancia al enemigo más cercano
-			d = [10.0/(abs(i[1][0] - self.jugador[0])+0.000001) for i in self.lista_enem if i[2]]
-			# if d:
-			# 	minimo = d[0]
-			# 	for i in d:			
-			# 		if i < minimo:
-			# 			minimo = i
-			# 	s -= minimo*100
-			s+=sum(d)
+			#d = [10.0/(abs(i[1][0] - self.jugador[0])+0.000001) for i in self.lista_enem if i[2]]
+			d = [(abs(i[1][0] - self.jugador[0])+0.000001) for i in self.lista_enem if i[2]]
+
+			if d:
+				# minimo = d[0]
+				# for i in d:			
+				# 	if i < minimo:
+				# 		minimo = i
+				s -= min(d)*100
+			#s+=sum(d)
 
 			# Si hay un enemigo demasiado cerca, buscamos evitarlo a toda costa
 			for i in self.lista_enem:		
 				if i[2]:
 					dist = distancia(i[1],self.jugador)
-					if dist < 100:
-						s += dist*10000
+					if dist <= 75:
+						s += dist*1000
 					# if enRectangulo(i[1], self.jugador):
 					# 	dist = distancia(i[1],self.jugador)
-					# 	s += dist*50000
+					# 	s += dist*1000
 						
 		return s
 
 # Comprueba si el enemigo está dentro de un rectángulo que rodea al jugador
 def enRectangulo(enemigo, jugador):
 	# Calculamos los límites del rectángulo
-	xmin = jugador[0] - 75
+	xmin = jugador[0] - 40
 	xmax = jugador[0] + 75
 	ymin = jugador[1] - 75
 	ymax = jugador[1] + 75
@@ -80,8 +84,6 @@ def enRectangulo(enemigo, jugador):
 		return True
 
 	return False
-
-
 
 
 #Calcula la distancia euclídea entre dos puntos
