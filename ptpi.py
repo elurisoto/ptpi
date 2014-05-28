@@ -1,5 +1,5 @@
 #-*-coding:utf-8-*-
-
+import sys
 from ia import *
 from clases_ptpi import *
 from ssheet import *
@@ -34,7 +34,7 @@ def colisiones(enemigos, jugador, disparos):
 				if enem in enemigos:
 					enemigos.remove(enem)
 				disparos.remove(disp)
-				puntos += 10
+				puntos += 5
 					
 
 
@@ -72,6 +72,10 @@ enemigos = []
 islas = []
 explotar = False
 puntos = 0
+manual = False
+
+if len(sys.argv) >1:
+	manual = sys.argv[1] == "-m"
 
 myfont = pygame.font.Font("fuente.ttf", 15)
 marcador = myfont.render("SCORE: 0", 0, (255,255,0))
@@ -103,6 +107,8 @@ while not done:
 
 		if pressed[pygame.K_p]: pause = not pause
 
+		if manual and pressed[pygame.K_SPACE]: puntos -= 1
+
 		if not pause:
 			screen.fill((0,0,0,0))
 			sprites.draw(screen)
@@ -121,7 +127,7 @@ while not done:
 				islas.append(isla)
 
 			# Añadimos un enemigo si toca
-			if pygame.time.get_ticks() - t_enemigo > 500:
+			if pygame.time.get_ticks() - t_enemigo > 250:
 				e_x = random.randint(5, ancho_pantalla-30)
 				e_y = -10
 				enemigos.append([Enemigo(e_x,e_y, 30, 30, 3, ROJO),[e_x + ancho_enemigo/2,e_y + alto_enemigo/2], True])
@@ -131,25 +137,26 @@ while not done:
 			#Busca colisiones
 			colisiones(enemigos, jugador, disparos)
 
-			# Crea el estado actual y lanza la búsqueda en profundidad
-			e = Estado(puntos, [jugador.rect.x + jugador.ancho/2, jugador.rect.y + jugador.alto/2], enemigos, jugador.velocidad, mov)
-			l = busqueda_profundidad(e,0)
+			if not manual:
+				
+				# Crea el estado actual y lanza la búsqueda en profundidad
+				e = Estado(puntos, [jugador.rect.x + jugador.ancho/2, jugador.rect.y + jugador.alto/2], enemigos, jugador.velocidad, mov)
+				l = busqueda_profundidad(e,0)
 
-			# max() nos devuelve la lista que contiene el mayor elemento de toda la estructura
-			mov = l.index(max(l))
-			jugador.control(mov)
-			#print mov
+				# max() nos devuelve la lista que contiene el mayor elemento de toda la estructura
+				mov = l.index(max(l))
+				jugador.control(mov)
 
-			# Si tenemos que disparar y hay un enemigo en la trayectoria del disparo, lo marcamos como disparado
-			# para ignorarlo posteriormente
-			if mov == DISPARAR:
-				puntos -= 1
-				for i in enemigos:	#Cálculos para ver si en caso de disparar habría colisión
-					if i[2]:
-						if i[1][0] - ancho_enemigo/2 -3 <= jugador.rect.x + jugador.ancho/2  <= i[1][0]+ancho_enemigo/2+3:
-							if i[1][1] <= 500:
-								i[2] = False
-								break
+				# Si tenemos que disparar y hay un enemigo en la trayectoria del disparo, lo marcamos como disparado
+				# para ignorarlo posteriormente
+				if mov == DISPARAR:
+					puntos -= 1
+					for i in enemigos:	#Cálculos para ver si en caso de disparar habría colisión
+						if i[2]:
+							if i[1][0] - ancho_enemigo/2 -3 <= jugador.rect.x + jugador.ancho/2  <= i[1][0]+ancho_enemigo/2+3:
+								if i[1][1] <= 485: 	#Posición desde la que aparecen los disparos
+									i[2] = False
+									break
 
 			if explotar:
 				explosion.blit(screen, posicionexplosion)

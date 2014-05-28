@@ -63,10 +63,9 @@ class Jugador(pygame.sprite.Sprite):
 			self.dispara()
 
 	def dispara(self):
-		if pygame.time.get_ticks() - self.ultimodisparo >= self.temporizador_disparos:
 
-			disparos.append(Disparo(self.rect.x+17, self.rect.y-15, 5))
-			self.ultimodisparo = pygame.time.get_ticks()
+		disparos.append(Disparo(self.rect.x+17, self.rect.y-15, 5))
+		self.ultimodisparo = pygame.time.get_ticks()
 
 	def control(self, orden):
 		movx = 0

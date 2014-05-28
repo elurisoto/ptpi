@@ -26,10 +26,12 @@ class Estado:
 		for i in self.lista_enem:	#Cálculos para ver si en caso de disparar habría colisión
 			if i[2]:
 				if i[1][0] - ancho_enemigo/2 +3 <= self.jugador[0] <= i[1][0]+ancho_enemigo/2-3:
-					l.remove(i)
-					n_puntuacion +=10
-					self.colision = True
-					break
+					if i[1][1] <= 485: 	#Posición desde la que aparecen los disparos
+
+						l.remove(i)
+						n_puntuacion +=5
+						self.colision = True
+						break
 
 
 		self.hijos = 	[Estado(self.puntuacion,[self.jugador[0] - self.v, self.jugador[1]], self.lista_enem, self.v, IZQUIERDA),	# Nos movemos a la izquierda
