@@ -25,7 +25,7 @@ class Estado:
 
 		for i in self.lista_enem:	#Cálculos para ver si en caso de disparar habría colisión
 			if i[2]:
-				if i[1][0] - ancho_enemigo/2 +3 <= self.jugador[0] <= i[1][0]+ancho_enemigo/2-3:
+				if i[1][0] - i[0].radius <= self.jugador[0] <= i[1][0] + i[0].radius:
 					if i[1][1] <= 485: 	#Posición desde la que aparecen los disparos
 
 						l.remove(i)
@@ -65,7 +65,7 @@ class Estado:
 			for i in self.lista_enem:		
 				if i[2]:
 					dist = distancia(i[1],self.jugador)
-					if dist <= 75:
+					if dist <= 80:
 						s += dist*1000
 					# if enRectangulo(i[1], self.jugador):
 					# 	dist = distancia(i[1],self.jugador)

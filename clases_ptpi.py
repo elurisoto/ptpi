@@ -40,27 +40,29 @@ class Jugador(pygame.sprite.Sprite):
 	ultimodisparo = 0
 	temporizador_disparos = 80
 
-	def __init__(self):
+	def __init__(self, manual):
 		self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
 		pygame.sprite.Sprite.__init__(self)
 		self.image = ss.image_at((301,235,65,65),(0,67,171))
 		sprites.add(self)
+		self.manual = manual
 
 
 	def update(self, pressed):
 		movx = 0
 
-		if pressed[pygame.K_LEFT]: 
-			if self.rect.x > 0:
-				movx = -self.velocidad
-		if pressed[pygame.K_RIGHT]: 
-			if self.rect.x < ancho_pantalla - self.ancho:
-				movx = self.velocidad
+		if self.manual:
+			if pressed[pygame.K_LEFT]: 
+				if self.rect.x > 0:
+					movx = -self.velocidad
+			if pressed[pygame.K_RIGHT]: 
+				if self.rect.x < ancho_pantalla - self.ancho:
+					movx = self.velocidad
 
-		self.rect.move_ip(movx, 0)
+			self.rect.move_ip(movx, 0)
 
-		if pressed[pygame.K_SPACE]:
-			self.dispara()
+			if pressed[pygame.K_SPACE] and (pygame.time.get_ticks() - self.ultimodisparo >= self.temporizador_disparos):
+				self.dispara()
 
 	def dispara(self):
 

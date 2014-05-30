@@ -12,8 +12,8 @@ def colisiones(enemigos, jugador, disparos):
 	i = j = 0
 	global explotar
 	global posicionexplosion
-	global marcador
 	global puntos
+	global vidas
 
 	for enem in enemigos:
 		if pygame.sprite.collide_circle(enem[0], jugador):	# Busca colisiones enemigo-jugador
@@ -22,6 +22,7 @@ def colisiones(enemigos, jugador, disparos):
 			explosion.play()
 			enem[0].kill()
 			enemigos.remove(enem)
+			vidas -= 1
 			
 
 		for disp in disparos:	# Busca colisiones disparo-enemigo
@@ -72,13 +73,16 @@ enemigos = []
 islas = []
 explotar = False
 puntos = 0
+vidas = 3
 manual = False
+
 
 if len(sys.argv) >1:
 	manual = sys.argv[1] == "-m"
 
 myfont = pygame.font.Font("fuente.ttf", 15)
 marcador = myfont.render("SCORE: 0", 0, (255,255,0))
+marcavidas = myfont.render("PLANES: 3", 0, (255,255,0))
 
 isla = Isla(random.randint(0,ancho_pantalla + 20), random.randint(0,2))
 islas.append(isla)
@@ -90,30 +94,39 @@ t_enemigo = pygame.time.get_ticks()
 fondo = pygame.sprite.Sprite()
 
 dibuja_fondo()
-jugador = Jugador()
+jugador = Jugador(manual)
 pause = False
 mov = NADA
+salir = False
 
-while not done:
+while vidas >= 0:
 		for event in pygame.event.get():
 				if event.type == pygame.QUIT:
-						done = True
+						exit()
 		
 		marcador = myfont.render("SCORE: " + str(puntos), 0, (255,255,0))
+		if vidas >0 :
+			marcavidas = myfont.render("PLANES: " + str(vidas), 0, (255,255,0))
+		else:
+			marcavidas = myfont.render("PLANES: " + str(vidas), 0, (255,0,0))
+
 		
 		pressed = pygame.key.get_pressed()
 
-		if pressed[pygame.K_ESCAPE]: done = True
+		if pressed[pygame.K_ESCAPE]: exit()
 
 		if pressed[pygame.K_p]: pause = not pause
 
-		if manual and pressed[pygame.K_SPACE]: puntos -= 1
+		if manual and pressed[pygame.K_SPACE] \
+		and (pygame.time.get_ticks() - jugador.ultimodisparo >= jugador.temporizador_disparos): 
+			puntos -= 1
 
 		if not pause:
 			screen.fill((0,0,0,0))
 			sprites.draw(screen)
 			sprites.update(pressed)
 			screen.blit(marcador, (10, 10))
+			screen.blit(marcavidas,(460,10))
 
 			# Hay que actualizar la posición real de los enemigos, ya que update() no la toca
 			for e in enemigos:
@@ -153,7 +166,7 @@ while not done:
 					puntos -= 1
 					for i in enemigos:	#Cálculos para ver si en caso de disparar habría colisión
 						if i[2]:
-							if i[1][0] - ancho_enemigo/2 -3 <= jugador.rect.x + jugador.ancho/2  <= i[1][0]+ancho_enemigo/2+3:
+							if i[1][0] - i[0].radius <= jugador.rect.x + jugador.radius  <= i[1][0]+i[0].radius:
 								if i[1][1] <= 485: 	#Posición desde la que aparecen los disparos
 									i[2] = False
 									break
@@ -187,6 +200,21 @@ while not done:
 			clock.tick(60)
 
 		pygame.display.flip()
+
+myfont = pygame.font.Font("fuente.ttf", 50)
+gameover = myfont.render("GAME OVER", 0, (255,0,0))
+
+while not salir:
+	screen.blit(gameover,(85,270))
+	for event in pygame.event.get():
+		salir = event.type == pygame.QUIT
+
+	pressed = pygame.key.get_pressed()
+
+	salir = pressed[pygame.K_ESCAPE]
+
+	clock.tick(60)
+	pygame.display.flip()
 
 
 
