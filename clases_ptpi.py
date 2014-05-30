@@ -21,6 +21,13 @@ DERECHA = 1
 DISPARAR = 2
 NADA = 3
 
+#pygame.mixer.pre_init(frequency=22050, size=-16, channels=2, buffer=4096)
+pygame.mixer.init()
+s_disparo = pygame.mixer.Sound('sonidos/disparo.wav')
+s_disparo.set_volume(0.05)
+pygame.mixer.music.load('sonidos/cancion.wav')
+pygame.mixer.music.set_volume(0.1)
+
 
 screen = pygame.display.set_mode((ancho_pantalla, alto_pantalla))
 screen.set_alpha()
@@ -68,6 +75,7 @@ class Jugador(pygame.sprite.Sprite):
 
 		disparos.append(Disparo(self.rect.x+17, self.rect.y-15, 5))
 		self.ultimodisparo = pygame.time.get_ticks()
+		s_disparo.play()
 
 	def control(self, orden):
 		movx = 0

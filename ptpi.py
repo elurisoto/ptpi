@@ -20,6 +20,7 @@ def colisiones(enemigos, jugador, disparos):
 			explotar = True
 			posicionexplosion = (enem[0].rect.x, enem[0].rect.y)
 			explosion.play()
+			s_explosion.play()
 			enem[0].kill()
 			enemigos.remove(enem)
 			vidas -= 1
@@ -30,6 +31,7 @@ def colisiones(enemigos, jugador, disparos):
 				explotar = True
 				posicionexplosion = (enem[0].rect.x, enem[0].rect.y)
 				explosion.play()
+				s_explosion.play()
 				enem[0].kill()
 				disp.kill()
 				if enem in enemigos:
@@ -54,6 +56,7 @@ def dibuja_fondo():
 
 pygame.init()
 
+
 # Carga la animación de las explosiones
 explosion = pyganim.PygAnimation([	('animaciones/explosion1.png',0.05),
 									('animaciones/explosion2.png',0.05),
@@ -65,7 +68,10 @@ explosion = pyganim.PygAnimation([	('animaciones/explosion1.png',0.05),
 								], loop = False)
 
 explosion.set_colorkey((0,65,175))
+s_explosion = pygame.mixer.Sound('sonidos/explosion.wav')
+s_explosion.set_volume(0.5)
 
+s_gameover = pygame.mixer.Sound('sonidos/gameover.wav')
 done = False
 
 # La estructura de enemigos es: [Objeto de la clase enemigo, posición real del mismo, booleano que indica si ya se le ha disparado]
@@ -98,6 +104,8 @@ jugador = Jugador(manual)
 pause = False
 mov = NADA
 salir = False
+
+pygame.mixer.music.play(-1)
 
 while vidas >= 0:
 		for event in pygame.event.get():
@@ -203,6 +211,9 @@ while vidas >= 0:
 
 myfont = pygame.font.Font("fuente.ttf", 50)
 gameover = myfont.render("GAME OVER", 0, (255,0,0))
+pygame.mixer.music.stop()
+pygame.time.wait(500)
+s_gameover.play()
 
 while not salir:
 	screen.blit(gameover,(85,270))
