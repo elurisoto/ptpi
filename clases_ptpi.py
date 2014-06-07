@@ -4,13 +4,6 @@ import pygame
 import random
 from ssheet import *
 
-
-NEGRO = (0, 0, 0)
-BLANCO = (255,255,255)
-AZUL = (0,0,255)
-VERDE = (0,255,0)
-ROJO = (255,0,0)
-MORADO = (255,0,255)
 ancho_pantalla = 600
 alto_pantalla = 600
 ancho_enemigo = 30
@@ -21,7 +14,6 @@ DERECHA = 1
 DISPARAR = 2
 NADA = 3
 
-#pygame.mixer.pre_init(frequency=22050, size=-16, channels=2, buffer=4096)
 pygame.mixer.init()
 s_disparo = pygame.mixer.Sound('sonidos/disparo.wav')
 s_disparo.set_volume(0.05)
@@ -102,16 +94,14 @@ class Enemigo(pygame.sprite.Sprite):
 	ancho = 30
 	alto = 30
 	velocidad = 1
-	color = ROJO
 	radius = 10
 	_layer = 1
 
 
-	def __init__(self, x, y, alto, ancho, velocidad, color):
+	def __init__(self, x, y, alto, ancho, velocidad):
 		self.x = x
 		self.y = y
 		self.velocidad = velocidad
-		self.color = color
 		self.alto = alto
 		self.ancho = ancho
 		self.rect = pygame.Rect(self.x, self.y, self.ancho, self.alto)
