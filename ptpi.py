@@ -81,7 +81,6 @@ puntos = 0
 vidas = 3
 manual = False
 
-contador = 0
 
 if len(sys.argv) >1:
 	manual = sys.argv[1] == "-m"
@@ -153,7 +152,6 @@ while vidas >= 0:
 				e_y = -10
 				enemigos.append([Enemigo(e_x,e_y, 30, 30, 3),[e_x + ancho_enemigo/2,e_y + alto_enemigo/2], True])
 				t_enemigo = pygame.time.get_ticks()
-				contador += 1
 
 
 			#Busca colisiones
@@ -215,8 +213,6 @@ gameover = myfont.render("GAME OVER", 0, (255,0,0))
 pygame.mixer.music.stop()
 pygame.time.wait(500)
 s_gameover.play()
-
-print contador
 
 while not salir:
 	screen.blit(gameover,(85,270))
