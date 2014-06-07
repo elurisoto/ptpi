@@ -3,7 +3,6 @@ import sys
 from ia import *
 from clases_ptpi import *
 from ssheet import *
-from sstripanim import *
 from copy import copy
 import pyganim
 
@@ -82,6 +81,7 @@ puntos = 0
 vidas = 3
 manual = False
 
+contador = 0
 
 if len(sys.argv) >1:
 	manual = sys.argv[1] == "-m"
@@ -151,8 +151,9 @@ while vidas >= 0:
 			if pygame.time.get_ticks() - t_enemigo > 250:
 				e_x = random.randint(5, ancho_pantalla-30)
 				e_y = -10
-				enemigos.append([Enemigo(e_x,e_y, 30, 30, 3, ROJO),[e_x + ancho_enemigo/2,e_y + alto_enemigo/2], True])
+				enemigos.append([Enemigo(e_x,e_y, 30, 30, 3),[e_x + ancho_enemigo/2,e_y + alto_enemigo/2], True])
 				t_enemigo = pygame.time.get_ticks()
+				contador += 1
 
 
 			#Busca colisiones
@@ -215,11 +216,12 @@ pygame.mixer.music.stop()
 pygame.time.wait(500)
 s_gameover.play()
 
+print contador
+
 while not salir:
 	screen.blit(gameover,(85,270))
 	for event in pygame.event.get():
 		salir = event.type == pygame.QUIT
-
 	pressed = pygame.key.get_pressed()
 
 	salir = pressed[pygame.K_ESCAPE]

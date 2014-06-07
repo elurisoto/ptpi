@@ -43,49 +43,23 @@ class Estado:
 	# Función heurística
 	def evaluar(self):
 		s = self.puntuacion*100000 + 100000/(len(self.lista_enem)+0.00001)
-		# if not(self.colision) and self.accion == DISPARAR:
-		# 	s=-100000
-		#print "[" + str(self.accion) + "]" + str(s)
 
 		# Buscaremos minimizar la distancia entre el jugador y el enemigo más cercano
 		if self.lista_enem:
 			# Busca cual es la distancia al enemigo más cercano
-			#d = [10.0/(abs(i[1][0] - self.jugador[0])+0.000001) for i in self.lista_enem if i[2]]
 			d = [abs(i[1][0] - self.jugador[0]) for i in self.lista_enem if i[2]]
 
 			if d:
-				# minimo = d[0]
-				# for i in d:			
-				# 	if i < minimo:
-				# 		minimo = i
 				s -= min(d)*100
-			#s+=sum(d)
 
 			# Si hay un enemigo demasiado cerca, buscamos evitarlo a toda costa
 			for i in self.lista_enem:		
 				if i[2]:
 					dist = distancia(i[1],self.jugador)
 					if dist <= 80:
-						s += dist*1000
-					# if enRectangulo(i[1], self.jugador):
-					# 	dist = distancia(i[1],self.jugador)
-					# 	s += dist*1000
+						s += dist*10000
 						
 		return s
-
-# Comprueba si el enemigo está dentro de un rectángulo que rodea al jugador
-def enRectangulo(enemigo, jugador):
-	# Calculamos los límites del rectángulo
-	xmin = jugador[0] - 40
-	xmax = jugador[0] + 75
-	ymin = jugador[1] - 75
-	ymax = jugador[1] + 75
-
-	if enemigo[0] > xmin and enemigo[0] < xmax and enemigo[1] > ymin and enemigo[1] < ymax:
-		return True
-
-	return False
-
 
 #Calcula la distancia euclídea entre dos puntos
 def distancia(a,b):
